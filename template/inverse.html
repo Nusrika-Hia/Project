@@ -1,0 +1,163 @@
+
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inverse Matrix Calculator</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding: 30px;
+    }
+
+    h1, h3 {
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .matrix-input {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .matrix-input .form-control {
+      flex: 1;
+      margin-right: 5px;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      margin: 0 5px;
+    }
+
+    .output-matrix {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+    }
+
+    .output-column {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      width: calc(100% / var(--numColumns) - 20px);
+      text-align: center;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Inverse Matrix Calculator</h1>
+
+    <div>
+      <h3>Enter the Matrix:</h3>
+      <div id="matrixInput"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="addRow()">Add Row</button>
+        <button class="btn btn-danger" onclick="deleteRow()">Delete Row</button>
+        <button class="btn btn-success" onclick="calculateInverse()">Calculate Inverse</button>
+        <button class="btn btn-info" onclick="takeNewMatrix()">Take a New Matrix</button>
+      </div>
+    </div>
+
+    <div>
+      <h3>Inverse Matrix:</h3>
+      <div id="inverseOutput" class="output-matrix"></div>
+    </div>
+  </div>
+
+  <script>
+    var numRows = 2; // Initial number of rows
+
+    function addRow() {
+      numRows++;
+      renderMatrixInput();
+    }
+
+    function deleteRow() {
+      if (numRows > 2) {
+        numRows--;
+        renderMatrixInput();
+      }
+    }
+
+    function renderMatrixInput() {
+      var matrixInput = document.getElementById('matrixInput');
+      matrixInput.innerHTML = '';
+
+      for (var i = 0; i < numRows; i++) {
+        var row = document.createElement('div');
+        row.className = 'matrix-input';
+
+        for (var j = 0; j < numRows; j++) {
+          var input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'form-control';
+          row.appendChild(input);
+        }
+
+        matrixInput.appendChild(row);
+      }
+    }
+
+    function calculateInverse() {
+      var matrix = [];
+
+      var matrixInputs = document.getElementsByClassName('form-control');
+      for (var i = 0; i < matrixInputs.length; i++) {
+        var value = parseFloat(matrixInputs[i].value);
+        matrix.push(value);
+      }
+
+      var inverseMatrix = getInverseMatrix(matrix, numRows);
+
+      var inverseOutput = document.getElementById('inverseOutput');
+      inverseOutput.style.setProperty('--numColumns', numRows);
+      inverseOutput.innerHTML = inverseMatrix;
+    }
+
+    function takeNewMatrix() {
+      numRows = 2;
+      renderMatrixInput();
+      var inverseOutput = document.getElementById('inverseOutput');
+      inverseOutput.innerHTML = '';
+    }
+
+    // Helper function to calculate the inverse matrix
+    function getInverseMatrix(matrix, numRows) {
+      var mathMatrix = math.reshape(matrix, [numRows, numRows]);
+      var inverse = math.inv(mathMatrix);
+      var inverseArray = math.flatten(inverse);
+
+      var inverseMatrix = '';
+      for (var j = 0; j < numRows; j++) {
+        inverseMatrix += '<div class="output-column">';
+        for (var i = 0; i < numRows; i++) {
+          inverseMatrix += '<div>' + inverseArray[i * numRows + j] + '</div>';
+        }
+        inverseMatrix += '</div>';
+      }
+
+      return inverseMatrix;
+    }
+
+    // Initial rendering of the matrix input
+    renderMatrixInput();
+  </script>
+</body>
+</html>
